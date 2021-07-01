@@ -1,0 +1,26 @@
+Add in photo of barebones BT-500, possibly draw over it to show wiring
+
+Going from here, we need a way to power the BT-500 and recharge the power source. Lipo batteries are the standard solution for something like this, but they operate at 3.7V while the keyboard requires 5.0V. To get around this and the charging requirement, we can use a [PowerBoost 500 Charger](https://www.adafruit.com/product/1944) from adafruit -- getting the PowerBoost 1000 is way over-engineered for this project since keyboards at maximum seem to draw 500mA. Down below I measure the current draw of my backlit keyboard, and find that it is far below the 500mA maximum we're allowed.
+
+Lastly, a nice-to-have for this project is a way to still use the keyboard using a wired connection while we're charging. This can be done with a DPDT{% sidenote 'sidenote-dpdt-wiring' 'See this diagram for intuition understanding how a DPDT is internally wired.' %} (double pole, double throw) switch that is on-off-on. Using a dremel and some hot glue, this will be a pretty easy addition to the keyboard.
+
+## BOM
+
+{% marginnote 'table-bom' 'Table 1: The bill of materials. Note to double-check the dimensions of whatever battery/keyboard combination being used.' %}
+
+|Item                    |Seller              |Price (USD)  |
+|:-----------------------|:-------------------|:-----------:|
+|BT-500                  |Handheld Scientific |39.95        |
+|PowerBoost 500 Charger  |Adafruit            |14.95        |
+|2500mAh Lip Battery     |Amazon              |14.77        |
+|DPDT Switches           |Amazon              |12.20        |
+|Durgod Taurus K320      |Amazon              |131.39       |
+|                        |**Total**           |**213.26**   |
+
+## Wiring
+
+{% newthought "First thing" %} we need to be aware of for the wiring is how the USB inside the keyboard is wired. The Durgod uses 5 wires -- black, yellow, green, white, and red -- which is pretty typical for USBs. Looking online, black and red are ground and power, respectively, while green and white are data+ and data- {% sidenote 'sidenote-data-wires' "Add in quick description of data+ and data-" %}. The only wire that takes a bit of testing is the yellow wire. It could be the ID wire (also called the On-The-Go ID for determining host vs device), but more likely than not it's just tied to ground. Using a voltometer, we can determine that in fact, yes, the yellow is just a redundant ground!
+
+From here, determining which side of the BT-500 to connec to D- and D+ would be the next logical step. Personally, I messed this up the first time and had to re-solder my connections, but taking a look at the [BT-500 manual](http://www.handheldsci.com/wp/wp-content/uploads/Manual_Full_v5.2.0.pdf) it's pretty clear that the female side of the device gets tied to the keyboard data.
+
+Lastly, we need to figure out how to wire the DPDT switch so that we can use the keyboard both as a wireless device or as a wired device while charging the battery. This ended up being a little tricky to figure out, but ultimately not too bad. This is accomplished by solving two separate questions{% sidenote 'sidenote-wiring-question' "Each question can be thought as one half of the DPDT switch, as it consists two on-off-on switches wired in parallel." %}: how to alternate power from the wired to wireless connection and how to disable the bluetooth.

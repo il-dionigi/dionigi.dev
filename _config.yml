@@ -1,14 +1,15 @@
-baseurl: /tufte-jekyll
-title: Tufte-Jekyll
-subtitle: Content-centric blogging
-author: clay harmon
+baseurl: ""
+url: https://www.dionigi.dev
+title: Dionigi's Projects & Thoughts
+subtitle: Jekyll theme for content-rich sites # this goes o
+author: brian (dionigi) raymond
 simple_search: http://google.com/search
-description: A Jekyll theme for content-rich sites
+description: A personal site for exploring and showcasing new ideas
 name: tufte
 markdown: kramdown
 markdown_ext: "markdown,mkdown,mkdn,mkd,md"
 permalink: /articles/:short_year/:title
-timezone: America/New_York
+timezone: America/Los_Angeles
 excerpt_separator: <!--more-->  # you can specify your own separator, of course.
 exclude: ['Gemfile', 'Gemfile.lock', 'Rakefile', 'UploadToGithub.Rakefile', 'README.md']
 post:
@@ -17,11 +18,11 @@ post:
 page:
   template: _page.txt
   extension: md
-editor: gvim
+#editor: gvim
 git:
   branch: master
 transfer:
   command: rsync
   settings: -av
   source: _site/
-  destination: ~/Git/clayh53.github.com/
+  destination: ~/git/clayh53.github.com/

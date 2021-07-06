@@ -1,5 +1,4 @@
-baseurl:
-url: https://www.dionigi.dev
+url: "https://dionigi.dev"
 title: Dionigi's Projects & Thoughts
 subtitle: Jekyll theme for content-rich sites # this goes o
 author: brian (dionigi) raymond

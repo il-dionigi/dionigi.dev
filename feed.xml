@@ -1,31 +1,221 @@
----
-layout: null
-nav_exclude: true
----
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>{{ site.title | xml_escape }}</title>
-    <description>{{ site.description | xml_escape }}</description>
-    <link>{{ site.url }}{{ site.baseurl }}/</link>
-    <atom:link href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}" rel="self" type="application/rss+xml"/>
-    <pubDate>{{ site.time | date_to_rfc822 }}</pubDate>
-    <lastBuildDate>{{ site.time | date_to_rfc822 }}</lastBuildDate>
-    <generator>Jekyll v{{ jekyll.version }}</generator>
-    {% for post in site.posts limit:10 %}
+    <title>Dionigi's Projects &amp; Thoughts</title>
+    <description>A personal site for exploring and showcasing new ideas</description>
+    <link>https://dionigi.dev/</link>
+    <atom:link href="https://dionigi.dev/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Tue, 13 Jul 2021 20:45:48 -0700</pubDate>
+    <lastBuildDate>Tue, 13 Jul 2021 20:45:48 -0700</lastBuildDate>
+    <generator>Jekyll v4.2.0</generator>
+    
       <item>
-        <title>{{ post.title | xml_escape }}</title>
-        <description>{{ post.content | xml_escape }}</description>
-        <pubDate>{{ post.date | date_to_rfc822 }}</pubDate>
-        <link>{{ post.url | prepend: site.baseurl | prepend: site.url }}</link>
-        <guid isPermaLink="true">{{ post.url | prepend: site.baseurl | prepend: site.url }}</guid>
-        {% for tag in post.tags %}
-        <category>{{ tag | xml_escape }}</category>
-        {% endfor %}
-        {% for cat in post.categories %}
-        <category>{{ cat | xml_escape }}</category>
-        {% endfor %}
+        <title>Adding BLE to a Wired Keyboard</title>
+        <description>&lt;h2 id=&quot;background&quot;&gt;Background&lt;/h2&gt;
+
+&lt;p&gt;&lt;span class=&quot;newthought&quot;&gt;I’ve been on a crusade&lt;/span&gt;  against visible wires recently. Wires going to my modem (&lt;em&gt;why&lt;/em&gt; is the internet coax cable coming out of the middle of my closet?). Wires going to my TV. And, most importantly, wires going to the peripherals on my desk.&lt;/p&gt;
+
+&lt;p&gt;I mean, seriously, my desk is already messy enough as it is, without the wires for my headset, mouse, and keyboard. Thankfully I was able to find a swift replacement for two of them using a Logitech MX Master 3 for the mouse and my current airpods for the headset (until I can afford a proper over-ear headset, that is). Finding a proper replacement keyboard, however, turned out to be a problem.&lt;/p&gt;
+
+&lt;p&gt;My ideal keyboard has the following requirements: wireless, mechanical, backlit, a good battery life (more than 2-3 days), affordable (&amp;lt;$200), and media controls. From what I could see online, this wasn’t available. OK, so I can’t buy a keyboard, but I’ve enjoyed using my CODE Keyboard for the past 7 years, so why not just make it into a wireless keyboard?&lt;/p&gt;
+
+&lt;p&gt;First thing I did was a quick google search online, which turned up a few results from others who had the same idea. One in particular – &lt;a href=&quot;https://imgur.com/gallery/E1NWKiG&quot;&gt;this album&lt;/a&gt; on imgur from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;u/MountainBound77&lt;/code&gt; – seemed like a good baseline. In fact, this post can ultimately be thought of as a spiritual successor to that album, since I ended up using the same bill of materials as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;u/MountainBound77&lt;/code&gt;; however, I went into more detail so that anyone else who wants to do this themselves has an easier time than I did.&lt;/p&gt;
+
+&lt;h2 id=&quot;parts&quot;&gt;Parts&lt;/h2&gt;
+
+&lt;p&gt;&lt;span class=&quot;newthought&quot;&gt;The requirements&lt;/span&gt;  for this project influence the parts list quite directly. When taking a look at what’s available for &lt;abbr title=&quot;Commercial Off-the-Shelf&quot;&gt;COTS&lt;/abbr&gt; solutions, there aren’t many options that act as transmitters instead of receivers for existing wireless keyboards (the &lt;abbr title=&quot;Bluetooth Low-Energy&quot;&gt;BLE&lt;/abbr&gt; dongles you can find of amazon, for example, are receivers&lt;label for=&quot;sidenote-ble-dongle&quot; class=&quot;margin-toggle sidenote-number&quot;&gt;&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;sidenote-ble-dongle&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;sidenote&quot;&gt;At a high level, a BLE dongle (AKA, receiver) takes incoming data sent as BLE packets and deconstructs them into binary streams to send over USB into a computer. This is similar, but unfortunately the opposite direction, as a transmitter which takes the incoming USB data from the keyboard and constructs them into BLE packets to send over radio. &lt;/span&gt;).&lt;/p&gt;
+
+&lt;p&gt;Luckily, the company Handheld Scientific sells a bluetooth adapter (the &lt;a href=&quot;http://handheldsci.com/kb/&quot;&gt;BT-500&lt;/a&gt;) which is made for our use-case and fairly cheap (&amp;lt; $40). We can even customize the adapter’s software, not that we need to for our purposes. The BT-500 is originally bulky, but this can be amended by putting in a customer support ticket to get the &lt;abbr title=&quot;Printed Circuit Board&quot;&gt;PCB&lt;/abbr&gt; without tall components (USB headers and mode-switch button) soldered on.&lt;/p&gt;
+
+&lt;p&gt;See below for a comparison of stock BT-500 compared to the barebones PCB version:&lt;/p&gt;
+
+&lt;figure&gt;&lt;img src=&quot;/assets/img/keyboard/bt500-pcb-comparison.png&quot; /&gt;&lt;figcaption class=&quot;maincolumn-figure&quot;&gt;Above is an image of the BT-500 from HandheldScientific exactly as they sell it &amp;#8211; a bit too large for us to put in the keyboard &amp;#8211; while below is what they send when you request the bare PCB without headers and button attached. I labeled the relevant pins on the PCB to help compare the two. Note that we don&amp;#8217;t need the mode switch button in the middle or the data +/- pins from the male USB header.&lt;/figcaption&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;label for=&quot;mf-battery-connections&quot; class=&quot;margin-toggle&quot;&gt;⊕&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;mf-battery-connections&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;marginnote&quot;&gt;&lt;img class=&quot;fullwidth&quot; src=&quot;/assets/img/keyboard/battery-connections.png&quot; /&gt;&lt;br /&gt;As a note for others, it can never hurt to verify the polarity of the battery you’re using. Turns out mine had its polarity swapped, so I had to resolder the connections. And before anyone asks, I ended up redoing it after taking this photo to add shrink tubing just to be safe. :)&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;Going from here, we need a way to power the BT-500 and recharge the power source. Lipo batteries are the standard solution for something like this, but they operate at 3V7 while the keyboard requires 5V. To get around this and the charging requirement, we can use a &lt;a href=&quot;https://www.adafruit.com/product/1944&quot;&gt;PowerBoost 500 Charger&lt;/a&gt; from Adafruit – getting the PowerBoost 1000 is way over-engineered for this project since keyboards at maximum seem to draw 500mA. If you’re concerned of your keyboard’s current use, you can test it using one of &lt;a href=&quot;https://www.amazon.com/gp/product/B07FMQZVW2&quot;&gt;these&lt;/a&gt;. I tested mine and found I was well below 500mA even with the brightest backlight setting.&lt;/p&gt;
+
+&lt;p&gt;Lastly, a nice-to-have for this project is a way to still use the keyboard wired while we’re charging. This can be done with a &lt;abbr title=&quot;Double Pole, Double Throw&quot;&gt;DPDT&lt;/abbr&gt; switch that is on-off-on. Using a dremel and some hot glue, the switch will be a pretty easy addition to the keyboard.&lt;/p&gt;
+
+&lt;p&gt;Since we’ll need to understand an on-off-on DPDT switch for the wiring, here is a quick description of both the DPDT’s schematic representation and its internals.&lt;/p&gt;
+
+&lt;figure&gt;&lt;img src=&quot;/assets/img/keyboard/dpdt-diagram.png&quot; /&gt;&lt;figcaption class=&quot;maincolumn-figure&quot;&gt;Looking at this figure, we see a DPDT switch both as its typically represented in wiring diagrams (above) and as a schematic showing the pins (below). While initially confusing, it is just two parallel on-off-on switches. Not too crazy. :)&lt;/figcaption&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;bom&quot;&gt;BOM&lt;/h2&gt;
+
+&lt;p&gt;Tallying up the prices shows that this cost slightly less than $82.&lt;/p&gt;
+
+&lt;p&gt;&lt;label for=&quot;table-bom-sans-keyboard&quot; class=&quot;margin-toggle&quot;&gt; ⊕&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;table-bom-sans-keyboard&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;marginnote&quot;&gt;Table 1: The bill of materials, taxes included. Note, DPDT switches could likely be bought for cheaper on a dedicated electronics site (e.g. Digikey). Also, be sure to double- and triple-check the battery dimensions, since last thing you want is the keyboard PCB piercing the battery – or straight-up not fitting! – when you close things up. &lt;/span&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Item&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Seller&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;Price (USD)&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;BT-500&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Handheld Scientific&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;39.95&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;PowerBoost 500 Charger&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Adafruit&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;14.95&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;2500mAh Lip Battery&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Amazon&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;14.77&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;DPDT Switches (6 Pack)&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Amazon&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;12.20&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;strong&gt;Total&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;&lt;strong&gt;81.87&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;I do have a confession to make at this point, though, since this didn’t end up being my actual total.&lt;/p&gt;
+
+&lt;p&gt;So… turns out the parts don’t fit in my CODE Keyboard. Drats!&lt;/p&gt;
+
+&lt;p&gt;I was hopeful that I could try and squeeze things in, but after soldering everything and testing that it worked (it did!) there just wasn’t enough space. There is &lt;em&gt;really&lt;/em&gt; limited clearance under the PCB inside the keyboard, even near the top, so I ended up needing to buy another keyboard for this project.&lt;/p&gt;
+
+&lt;p&gt;Much like u/MountainBound77 from the original iteration of this project, the Durgod Taurus K320 seemed like a great fit. I did splurge for the backlit version, but testing showed that it didn’t draw that much more current with the LEDs on the lowest setting, and I can always turn off the LEDs during the day.&lt;/p&gt;
+
+&lt;p&gt;&lt;label for=&quot;table-bom-keyboard&quot; class=&quot;margin-toggle&quot;&gt; ⊕&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;table-bom-keyboard&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;marginnote&quot;&gt;Table 2: The final bill of materials, taxes included. Note to double-check the dimensions of whatever battery/keyboard combination being used, or else you’ll end up in the same situation as me. &lt;/span&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Item&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Seller&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;Price (USD)&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Wireless Componenets&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;See above&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;81.87&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Durgod Taurus K320&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Amazon&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;131.39&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;strong&gt;Grand Total&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;&lt;strong&gt;213.26&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;wiring&quot;&gt;Wiring&lt;/h2&gt;
+
+&lt;p&gt;&lt;span class=&quot;newthought&quot;&gt;First thing&lt;/span&gt;  we need to be aware of for the wiring is how the USB inside the keyboard is wired. The Durgod uses 5 wires – black, yellow, green, white, and red – which is pretty typical for USBs. Looking online, black and red are ground and power, respectively, while green and white are data+ and data- &lt;label for=&quot;sidenote-data-wires&quot; class=&quot;margin-toggle sidenote-number&quot;&gt;&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;sidenote-data-wires&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;sidenote&quot;&gt;The data+ and data- wires are there to create a &lt;a href=&quot;https://en.wikipedia.org/wiki/Differential_signaling&quot;&gt;differential pair&lt;/a&gt;, reducing the external interference on the signal. &lt;/span&gt;. The only wire that takes a bit of testing is the yellow wire. It could be the ID pin (also called the &lt;a href=&quot;https://en.wikipedia.org/wiki/USB_On-The-Go&quot;&gt;On-The-Go&lt;/a&gt; wire for determining host vs device), but more likely than not it’s just tied to ground. Using a voltometer, I determined that in fact, yes, the yellow is just a redundant ground!&lt;/p&gt;
+
+&lt;p&gt;From here, determining which side of the BT-500 to connect to D- and D+ would be the next logical step. Personally, I messed this up the first time and had to re-solder my connections, but taking a look at the &lt;a href=&quot;http://www.handheldsci.com/wp/wp-content/uploads/Manual_Full_v5.2.0.pdf&quot;&gt;BT-500 manual&lt;/a&gt; it’s pretty clear the female side of the device gets tied to the keyboard data.&lt;/p&gt;
+
+&lt;p&gt;Lastly, we need to figure out how to wire the DPDT switch so we can use the keyboard wireless, or wired when charging the battery. This ended up being a little tricky to figure out, but ultimately not too bad. This is accomplished by solving two separate questions:&lt;label for=&quot;sidenote-wiring-question&quot; class=&quot;margin-toggle sidenote-number&quot;&gt;&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;sidenote-wiring-question&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;sidenote&quot;&gt;Each question will be solved by one half of the DPDT switch, as it consists of two on-off-on switches wired in parallel. This can be seen more clearly in the figure at the end of the ‘Parts’ section. &lt;/span&gt; how to alternate power from the wired to wireless connection and how to disable the bluetooth.&lt;/p&gt;
+
+&lt;p&gt;Alternating power sources is the easy one since we just change what the keyboard’s outbound Vcc is connected to. Meanwhile, to enable or disable the bluetooth we need to utilize the PowerBoost 500’s enable pin. If we connect it to ground, the PowerBoost stops outputting 5V, and the BT-500 no longer receives enough power to operate. Ta-da!&lt;/p&gt;
+
+&lt;p&gt;Putting it all together, we get the following schematic:&lt;/p&gt;
+
+&lt;figure&gt;&lt;img src=&quot;/assets/img/keyboard/wiring-diagram.jpg&quot; /&gt;&lt;figcaption class=&quot;maincolumn-figure&quot;&gt;Possible status LEDs are included, but in my case were not used due to not enough space in the case.&lt;/figcaption&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;construction&quot;&gt;Construction&lt;/h2&gt;
+
+&lt;p&gt;&lt;span class=&quot;newthought&quot;&gt;Putting it together&lt;/span&gt;  isn’t too bad.&lt;/p&gt;
+
+&lt;p&gt;I started by finding a video online for how to take apart the Durgod. My advice would be to get some sort of pry tool (mine are “triangle dissasemble blades,” whatever that means) if taking apart a Durgod since the latches on the corners are especially tricky.&lt;/p&gt;
+
+&lt;p&gt;Just as I figured, the backlit version also has plenty of space at the top for our needs.&lt;/p&gt;
+
+&lt;figure&gt;&lt;img src=&quot;/assets/img/keyboard/keyboard-backplate-empty.png&quot; /&gt;&lt;figcaption class=&quot;maincolumn-figure&quot;&gt;Taking a look at the inside of the case, there were a bunch of compartments that would get in the way of placing our components. In this photo, I already got rid of the majority (those vertical lines in the top channel) with some scissors and a plier. I originally thought of leaving that compartment to the top right of the USB-C port, but ultimately also removed it so that we could put the switch on that side.&lt;/figcaption&gt;&lt;/figure&gt;
+
+&lt;p&gt;Next, I used a dremel to cut a rectangle to the top right of the USB-C port for our DPDT switch. With that out of the way, all that remained was to solder everything together using the schematic as reference.&lt;/p&gt;
+
+&lt;p&gt;For those new to soldering, I found it helpful to tin the wires (fancy speak for adding solder) before trying connect them to the DPDT switch. Also, for safety reasons, it’s never a bad idea to buy some shrink tubing so that you don’t have exposed wire at the connection points. My colored wires came with colored shrink tubing, so depending on where you shop it might not even cost extra.&lt;/p&gt;
+
+&lt;p&gt;It might also be a good idea to add tape to the underside of the PCB where the through-hole wires might poke the battery – we don’t want a battery leak! I found that my battery just &lt;em&gt;barely&lt;/em&gt; fit when the case was closed.&lt;/p&gt;
+
+&lt;p&gt;Anyhow, here’s a picture of everything soldered and taped down:&lt;/p&gt;
+
+&lt;figure&gt;&lt;img src=&quot;/assets/img/keyboard/keyboard-components-added.png&quot; /&gt;&lt;figcaption class=&quot;maincolumn-figure&quot;&gt;I made some wires a tad too long, but I&amp;#8217;m overall pleased with how I laid out the componenets. The DPDT switch is on the right side to make space for the battery on the left, and everything fit snugly on the right. If I were to do it again, I&amp;#8217;d take more time with the dremel since the DPDT switch&amp;#8217;s hole is a little sloppy. Thankfully it can&amp;#8217;t be seen, though :P&lt;/figcaption&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;battery-life&quot;&gt;Battery Life&lt;/h2&gt;
+
+&lt;p&gt;&lt;span class=&quot;newthought&quot;&gt;Calculating the battery&lt;/span&gt;  life takes a little bit of math and looking at specs.&lt;/p&gt;
+
+&lt;p&gt;To begin, I measured the current usage of the keyboard prior to modifying it, and without the backlight on it only draws around ~13.3mA. With the backlight on the minimal setting, the draw increases a tiny bit to ~17.6mA, and then increases linearly to ~121.4mA at the brightest setting nine levels up.&lt;/p&gt;
+
+&lt;p&gt;Meanwhile, the BT-500 draws 40mA and the PowerBoost 500 draws 5mA, as according to their spec sheets. Another thing we need to note is the operating efficiency of the PowerBoost 500, which from the specs we get as 90%+ for the range of operating current we’ll be needing.&lt;/p&gt;
+
+&lt;p&gt;To calculate the battery life, we use the following equation that we can derive from \(t = \frac{C}{A}\):&lt;/p&gt;
+
+&lt;p&gt;&lt;label for=&quot;mn-equation-variables&quot; class=&quot;margin-toggle&quot;&gt; ⊕&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;mn-equation-variables&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;marginnote&quot;&gt;In this equation, \(C\) is capacity, \(A\) is current draw, and \(\eta\) is efficiency. Likewise, subscripts \(_{BT}\), \(_{PB}\), and \(_{K}\), are respectively BT-500, PowerBoost 500, and keyboard. &lt;/span&gt;&lt;/p&gt;
+
+\[t_{hours} = \frac{C_{battery}}{A_{PB} + \frac{1}{\eta_{PB}^2}(A_{BT} + A_{K})}\]
+
+&lt;p&gt;Plugging in the values, we get the following for theoretical battery life.&lt;/p&gt;
+
+&lt;p&gt;&lt;label for=&quot;table-battery-life&quot; class=&quot;margin-toggle&quot;&gt; ⊕&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;table-battery-life&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;marginnote&quot;&gt;Table3: The current draws and theoretical battery life using our components and their power consumptions, accounting for boosted voltage efficiency. Calculated for our 2500mA battery. &lt;/span&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Backlight Level&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;System Current Draw (mA)&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;Battery Life (hours)&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;0  (none)&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;70.80&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;35.3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;1  (minimal)&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;76.11&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;32.85&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;10 (maximal)&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;204.26&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;12.24&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;&lt;span class=&quot;newthought&quot;&gt;Success!&lt;/span&gt;  Couldn’t be happier with how this turned out.&lt;/p&gt;
+
+&lt;p&gt;If I were to be nit-picky, I &lt;em&gt;could&lt;/em&gt; say the battery life is too short, but considering that I turn the keyboard off when not in use, 30+ hours is more than enough. Having used the keyboard for the past few weeks, it easily lasts me more than 3 days since I don’t use this keyboard for work – my work laptop has bluetooth disabled, and I’m not about to use this wired after spending time on specifically making it wireless.&lt;/p&gt;
+
+&lt;p&gt;To anyone wanting to make their own wireless keyboard, I strongly suggest it for the learning opportunity! Personally, I was only about 50% confident in being able to pull this off, but here I am with a working wireless keyboard. :)&lt;/p&gt;
+
+&lt;figure class=&quot;fullwidth&quot;&gt;&lt;img src=&quot;/assets/img/keyboard/keyboard-hello-world.png&quot; /&gt;&lt;figcaption&gt;&amp;#8216;Hello world!&amp;#8217; using the keyboard &amp;#8211; first thing I did with it&lt;/figcaption&gt;&lt;/figure&gt;
+</description>
+        <pubDate>Fri, 11 Jun 2021 00:00:00 -0700</pubDate>
+        <link>https://dionigi.dev/articles/21/adding-bluetooth-to-wired-keyboard</link>
+        <guid isPermaLink="true">https://dionigi.dev/articles/21/adding-bluetooth-to-wired-keyboard</guid>
+        
+        
       </item>
-    {% endfor %}
+    
   </channel>
 </rss>
